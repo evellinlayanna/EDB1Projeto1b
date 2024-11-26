@@ -17,6 +17,7 @@ int main() {
     printf("4. Exibir Cargas\n");
     printf("5. Sair\n");
     printf("Escolha uma opção: ");
+    printf("\n");
     scanf("%d", &escolha);
 
     switch (escolha) {

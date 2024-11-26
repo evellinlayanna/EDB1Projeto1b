@@ -1,8 +1,7 @@
 #include "projeto.h"
 
 // Função para criar um novo nó de carga
-Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade,
-                  char *descricao) {
+Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade, char *descricao) {
   Carga *novaCarga = (Carga *)malloc(sizeof(Carga));
   if (novaCarga == NULL) {
     printf("Falha na alocação de memória!\n");

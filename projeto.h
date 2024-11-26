@@ -21,13 +21,15 @@ typedef struct Fila {
 } Fila;
 
 // Protótipos das funções
-Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade,
-                  char *descricao);
+Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade, char *descricao);
 Fila *inicializarFila();
+
 int estaVazia(Fila *f);
 void enfileirar(Fila *f, Carga *novaCarga);
+
 Carga *desenfileirar(Fila *f);
 Carga *visualizar(Fila *f);
+
 void adicionarCarga(Fila *f);
 void removerCarga(Fila *f);
 void buscarCarga(Fila *f, char *idCarga);
