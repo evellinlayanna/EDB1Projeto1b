@@ -10,13 +10,14 @@ int main() {
   char idCarga[10];
 
   do {
-    printf("\nSistema de Gerenciamento de Cargas\n");
+    printf("\n ===== Sistema de Gerenciamento de Cargas ===== \n");
     printf("1. Adicionar Carga\n");
     printf("2. Remover Carga\n");
     printf("3. Buscar Carga\n");
     printf("4. Exibir Cargas\n");
     printf("5. Sair\n");
     printf("Escolha uma opção: ");
+    printf("============================")
     printf("\n");
     scanf("%d", &escolha);
 

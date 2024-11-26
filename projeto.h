@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Definição das estruturas
+// Representa uma carga com seus atributos, como ID, tipo, peso, prioridade e descrição
+// O campo 'proxima' conecta esta carga à próxima, formando uma lista encadeada
 typedef struct Carga {
   char id[10];
   char tipo[50];
@@ -15,6 +16,7 @@ typedef struct Carga {
   struct Carga *proxima;
 } Carga;
 
+// Representa a fila de cargas. Armazena o início e o final da fila
 typedef struct Fila {
   Carga *inicio;
   Carga *fim;

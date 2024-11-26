@@ -1,22 +1,24 @@
 #include "projeto.h"
 
-// Função para criar um novo nó de carga
+// Cria uma nova carga, recebe os dados como parâmetros e aloca memória para ela
+// Se a alocação falhar, o programa é encerrado
 Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade, char *descricao) {
   Carga *novaCarga = (Carga *)malloc(sizeof(Carga));
   if (novaCarga == NULL) {
     printf("Falha na alocação de memória!\n");
     exit(1);
   }
+  // Copia os dados recebidos para os campos da nova carga
   strcpy(novaCarga->id, id);
   strcpy(novaCarga->tipo, tipo);
   novaCarga->peso = peso;
   strcpy(novaCarga->prioridade, prioridade);
   strcpy(novaCarga->descricao, descricao);
-  novaCarga->proxima = NULL;
-  return novaCarga;
+  novaCarga->proxima = NULL; // Não tem próxima carga
+  return novaCarga; // Retorna o ponteiro para a nova carga
 }
 
-// Função para inicializar a fila
+// Inicializa a fila, definindo o início e o fim como vazia
 Fila *inicializarFila() {
   Fila *f = (Fila *)malloc(sizeof(Fila));
   if (f == NULL) {
@@ -32,17 +34,21 @@ Fila *inicializarFila() {
 int estaVazia(Fila *f) { return (f->inicio == NULL); }
 
 // Função para enfileirar uma carga
+// Adiciona uma nova carga à fila
 void enfileirar(Fila *f, Carga *novaCarga) {
   if (estaVazia(f)) {
+    // Se a fila estiver vazia, a nova carga será o início e o fim da fila
     f->inicio = novaCarga;
     f->fim = novaCarga;
   } else {
+    // Se não estiver vazia, adiciona a nova carga ao final da fila
     f->fim->proxima = novaCarga;
     f->fim = novaCarga;
   }
 }
 
 // Função para desenfileirar uma carga
+// Remove a carga mais antiga da fila (FIFO: First In, First Out)
 Carga *desenfileirar(Fila *f) {
   if (estaVazia(f)) {
     printf("A fila está vazia!\n");
