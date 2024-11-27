@@ -1,196 +1,147 @@
 #include "projeto.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Cria uma nova carga, recebe os dados como parâmetros e aloca memória para ela
-// Se a alocação falhar, o programa é encerrado
-Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade, char *descricao) {
-  Carga *novaCarga = (Carga *)malloc(sizeof(Carga));
-  if (novaCarga == NULL) {
-    printf("Falha na alocação de memória!\n");
+// Cria uma nova fila vazia
+Fila *criarFila() {
+  Fila *fila = (Fila *)malloc(sizeof(Fila));
+  if (!fila) {
+    printf("Erro ao alocar memória para a fila.\n");
     exit(1);
   }
-  // Copia os dados recebidos para os campos da nova carga
-  strcpy(novaCarga->id, id);
-  strcpy(novaCarga->tipo, tipo);
-  novaCarga->peso = peso;
-  strcpy(novaCarga->prioridade, prioridade);
-  strcpy(novaCarga->descricao, descricao);
-  novaCarga->proxima = NULL; // Não tem próxima carga
-  return novaCarga; // Retorna o ponteiro para a nova carga
+  fila->inicio = NULL;
+  fila->fim = NULL;
+  return fila;
 }
 
-// Inicializa a fila, definindo o início e o fim como vazia
-Fila *inicializarFila() {
-  Fila *f = (Fila *)malloc(sizeof(Fila));
-  if (f == NULL) {
-    printf("Falha na alocação de memória!\n");
+// Cria um novo nó com uma carga
+No *criarNo(Carga carga) {
+  No *novoNo = (No *)malloc(sizeof(No));
+  if (!novoNo) {
+    printf("Erro ao alocar memória para o nó.\n");
     exit(1);
   }
-  f->inicio = NULL;
-  f->fim = NULL;
-  return f;
+  novoNo->carga = carga;
+  novoNo->proximo = NULL;
+  return novoNo;
 }
 
-// Função para verificar se a fila está vazia
-int estaVazia(Fila *f) { return (f->inicio == NULL); }
-
-// Função para enfileirar uma carga
-// Adiciona uma nova carga à fila
-void enfileirar(Fila *f, Carga *novaCarga) {
-  if (estaVazia(f)) {
-    // Se a fila estiver vazia, a nova carga será o início e o fim da fila
-    f->inicio = novaCarga;
-    f->fim = novaCarga;
+// Adiciona um novo nó à fila
+void enfileirar(Fila *fila, Carga carga) {
+  No *novoNo = criarNo(carga);
+  if (!fila->inicio) { // Fila vazia
+    fila->inicio = novoNo;
+    fila->fim = novoNo;
   } else {
-    // Se não estiver vazia, adiciona a nova carga ao final da fila
-    f->fim->proxima = novaCarga;
-    f->fim = novaCarga;
+    fila->fim->proximo = novoNo;
+    fila->fim = novoNo;
   }
 }
 
-// Função para desenfileirar uma carga
-// Remove a carga mais antiga da fila (FIFO: First In, First Out)
-Carga *desenfileirar(Fila *f) {
-  if (estaVazia(f)) {
-    printf("A fila está vazia!\n");
-    return NULL;
+// Remove o primeiro nó da fila e retorna a carga removida
+Carga desenfileirar(Fila *fila) {
+  if (!fila->inicio) {
+    printf("Erro: Fila vazia.\n");
+    exit(1);
   }
-  Carga *temp = f->inicio;
-  f->inicio = f->inicio->proxima;
-  if (f->inicio == NULL) {
-    f->fim = NULL;
+  No *noRemovido = fila->inicio;
+  Carga carga = noRemovido->carga;
+  fila->inicio = noRemovido->proximo;
+  if (!fila->inicio) { // Se a fila ficou vazia
+    fila->fim = NULL;
   }
-  return temp;
+  free(noRemovido);
+  return carga;
 }
 
-// Função para visualizar a carga no início da fila
-Carga *visualizar(Fila *f) {
-  if (estaVazia(f)) {
-    printf("A fila está vazia!\n");
-    return NULL;
-  }
-  return f->inicio;
-}
-
-// Função para adicionar uma nova carga
-void adicionarCarga(Fila *f) {
-  char id[10], tipo[50], prioridade[10], descricao[200];
-  float peso;
-
-  printf("Informe o ID da carga: ");
-  scanf("%s", id);
-  printf("Informe o tipo da carga: ");
-  scanf(" %[^\n]", tipo);
-  printf("Informe o peso da carga: ");
-  scanf("%f", &peso);
-  printf("Informe a prioridade da carga (Alta, Normal, Baixa): ");
-  scanf(" %[^\n]", prioridade);
-  printf("Informe a descrição da carga: ");
-  scanf(" %[^\n]", descricao);
-
-  Carga *novaCarga = criarCarga(id, tipo, peso, prioridade, descricao);
-  enfileirar(f, novaCarga);
-  printf("Carga adicionada com sucesso!\n");
-}
-
-// Função para remover uma carga com base na prioridade
-void removerCarga(Fila *f) {
-  if (estaVazia(f)) {
-    printf("A fila está vazia!\n");
+// Exibe todos os nós da fila
+void exibirFila(Fila *fila) {
+  if (!fila->inicio) {
+    printf("A fila está vazia.\n");
     return;
   }
-  Carga *cargaAltaPrioridade = NULL;
-
-  // Encontrar a primeira carga com prioridade "Alta"
-  Carga *atual = f->inicio;
-  while (atual != NULL) {
-    if (strcmp(atual->prioridade, "Alta") == 0) {
-      cargaAltaPrioridade = atual;
-      break;
-    }
-    atual = atual->proxima;
-  }
-
-  // Se nenhuma carga com prioridade "Alta", remove a primeira carga
-  if (cargaAltaPrioridade == NULL) {
-    Carga *cargaRemovida = desenfileirar(f);
-    printf("Carga removida: ID - %s, Tipo - %s\n", cargaRemovida->id,
-           cargaRemovida->tipo);
-    free(cargaRemovida);
-  } else {
-    // Remove a carga com prioridade "Alta"
-    if (cargaAltaPrioridade == f->inicio) {
-      f->inicio = f->inicio->proxima;
-    } else {
-      atual = f->inicio;
-      while (atual->proxima != cargaAltaPrioridade) {
-        atual = atual->proxima;
-      }
-      atual->proxima = cargaAltaPrioridade->proxima;
-    }
-    printf("Carga removida: ID - %s, Tipo - %s\n", cargaAltaPrioridade->id,
-           cargaAltaPrioridade->tipo);
-    free(cargaAltaPrioridade);
+  No *atual = fila->inicio;
+  printf("Fila de cargas:\n\n");
+  while (atual) {
+    printf("ID: %s | Tipo: %s | Peso: %.2f | Prioridade: %s | Descrição: %s\n",
+           atual->carga.id, atual->carga.tipo, atual->carga.peso,
+           atual->carga.prioridade, atual->carga.descricao);
+    atual = atual->proximo;
   }
 }
 
-// Função para buscar uma carga pelo ID
-void buscarCarga(Fila *f, char *idCarga) {
-  if (estaVazia(f)) {
-    printf("A fila está vazia!\n");
-    return;
-  }
-  Carga *atual = f->inicio;
-  while (atual != NULL) {
-    if (strcmp(atual->id, idCarga) == 0) {
-      printf("Carga encontrada:\n");
-      printf("ID: %s\n", atual->id);
-      printf("Tipo: %s\n", atual->tipo);
-      printf("Peso: %.2f kg\n", atual->peso);
-      printf("Prioridade: %s\n", atual->prioridade);
-      printf("Descrição: %s\n", atual->descricao);
+// Busca uma carga pelo ID
+void buscarPorID(Fila *fila, const char *id) {
+  No *atual = fila->inicio;
+  while (atual) {
+    if (strcmp(atual->carga.id, id) == 0) {
+      printf("\nCarga encontrada!\n\n");
+      printf("ID: %s\nTipo: %s\nPeso: %.2f\nPrioridade: %s\nDescrição: %s\n",
+             atual->carga.id, atual->carga.tipo, atual->carga.peso,
+             atual->carga.prioridade, atual->carga.descricao);
       return;
     }
-    atual = atual->proxima;
+    atual = atual->proximo;
   }
-  printf("Carga com ID %s não encontrada!\n", idCarga);
+  printf("\nCarga com ID %s não encontrada.\n", id);
 }
 
-// Função para exibir todas as cargas na fila
-void exibirCargas(Fila *f) {
-  if (estaVazia(f)) {
-    printf("A fila está vazia!\n");
+// Remove a carga de prioridade mais alta
+void removerPorPrioridade(Fila *fila) {
+  if (!fila->inicio) {
+    printf("A fila está vazia.\n");
     return;
   }
-  printf("Fila de Cargas:\n");
-  Carga *atual = f->inicio;
-  while (atual != NULL) {
-    printf(
-        "ID: %s | Tipo: %s | Peso: %.2f Kg | Prioridade: %s | Descrição: %s\n",
-        atual->id, atual->tipo, atual->peso, atual->prioridade,
-        atual->descricao);
-    atual = atual->proxima;
+
+  No *anterior = NULL, *atual = fila->inicio, *prioritario = NULL,
+     *prevPrioritario = NULL;
+
+  while (atual) {
+    if (strcmp(atual->carga.prioridade, "Alta") == 0) {
+      prioritario = atual;
+      prevPrioritario = anterior;
+      break;
+    }
+    anterior = atual;
+    atual = atual->proximo;
   }
+
+  if (!prioritario) { // Nenhum com prioridade "Alta"
+    prioritario = fila->inicio;
+  }
+
+  if (prevPrioritario) {
+    prevPrioritario->proximo = prioritario->proximo;
+  } else {
+    fila->inicio = prioritario->proximo;
+  }
+
+  if (prioritario == fila->fim) {
+    fila->fim = prevPrioritario;
+  }
+
+  printf("Carga ID: %s e Tipo: %s removida! \n", prioritario->carga.id,
+         prioritario->carga.tipo);
+  free(prioritario);
 }
 
-// Função para carregar dados de carga de um arquivo CSV
-void carregarCargas(Fila *f, char *nomeArquivo) {
+// Carrega cargas de um arquivo .csv
+void carregarCargasDeArquivo(Fila *fila, const char *nomeArquivo) {
   FILE *arquivo = fopen(nomeArquivo, "r");
-  if (arquivo == NULL) {
-    printf("Erro ao abrir o arquivo %s!\n", nomeArquivo);
+  if (!arquivo) {
+    printf("Erro ao abrir o arquivo %s.\n", nomeArquivo);
     return;
   }
 
   char linha[256];
-  char id[10], tipo[50], prioridade[10], descricao[200];
-  float peso;
-
-  while (fgets(linha, sizeof(linha), arquivo) != NULL) {
-    sscanf(linha, "%[^,],%[^,],%f,%[^,],%[^\n]", id, tipo, &peso, prioridade,
-           descricao);
-    Carga *novaCarga = criarCarga(id, tipo, peso, prioridade, descricao);
-    enfileirar(f, novaCarga);
+  while (fgets(linha, sizeof(linha), arquivo)) {
+    Carga carga;
+    sscanf(linha, "%[^,],%[^,],%f,%[^,],%[^\n]", carga.id, carga.tipo,
+           &carga.peso, carga.prioridade, carga.descricao);
+    enfileirar(fila, carga);
   }
 
   fclose(arquivo);
-  printf("Dados de carga carregados de %s!\n", nomeArquivo);
+  printf("Cargas carregadas do arquivo %s.\n", nomeArquivo);
 }
