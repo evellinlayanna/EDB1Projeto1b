@@ -41,6 +41,7 @@ A remoção segue as seguintes regras:
 Após a remoção, a fila deve ser reorganizada para manter a integridade. Exemplo:
 
 Fila inicial:
+
 ID: 001 | Tipo: Container | Peso: 15.3 | Prioridade: Normal
 ID: 002 | Tipo: Granel sólido | Peso: 30.0 | Prioridade: Alta
 ID: 003 | Tipo: Granel l´ıquido | Peso: 50.0 | Prioridade: Normal
@@ -48,6 +49,7 @@ ID: 003 | Tipo: Granel l´ıquido | Peso: 50.0 | Prioridade: Normal
 Remoção: A carga com ID 002 (prioridade Alta) é processada.
 
 Fila resultante:
+
 ID: 001 | Tipo: Container | Peso: 15.3 | Prioridade: Normal
 ID: 003 | Tipo: Granel líquido | Peso: 50.0 | Prioridade: Normal
 
@@ -60,9 +62,9 @@ O sistema deverá exibir todas as cargas pertencentes à fila.
 
 5. Exemplo de um arquivo .csv
 
-C006,Granel l´ıquido,4587.31,Normal,medicamentos
+C006,Granel líquido,4587.31,Normal,medicamentos
 C002,Container,2568.19,Alta,fertilizantes
-C020,Granel s´olido,4097.81,Normal,produtos químicos
+C020,Granel sólido,4097.81,Normal,produtos químicos
 C003,Container,2176.93,Baixa,materiais de construção
 
 FUNCIONAMENTO GERAL
