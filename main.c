@@ -2,8 +2,11 @@
 #include <stdio.h>
 
 int main() {
+
+  // Cria uma fila vazia para armazenar as cargas
   Fila *fila = criarFila();
 
+  // Carrega cargas de um arquivo CSV para a fila
   carregarCargasDeArquivo(fila, "cargas.csv");
 
   int escolha;

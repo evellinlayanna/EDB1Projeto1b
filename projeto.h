@@ -12,8 +12,8 @@ typedef struct Carga {
 
 // Estrutura para representar um nó na fila
 typedef struct No {
-  Carga carga;        // Dados da carga armazenados no nó
-  struct No *proximo; // Ponteiro para o próximo nó
+  Carga carga;
+  struct No *proximo;
 } No;
 
 // Estrutura para representar a fila

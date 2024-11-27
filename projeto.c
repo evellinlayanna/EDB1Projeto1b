@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Cria uma nova fila vazia
+// Cria e inicia uma nova fila vazia
+// Cada fila tem dois ponteiros: um para o início e outro para o fim
 Fila *criarFila() {
   Fila *fila = (Fila *)malloc(sizeof(Fila));
   if (!fila) {
@@ -15,15 +16,16 @@ Fila *criarFila() {
   return fila;
 }
 
-// Cria um novo nó com uma carga
+// Função que cria um novo nó com as informações fornecidas
+// Aloca memória, preenche os dados e retorna o nó pronto para uso
 No *criarNo(Carga carga) {
   No *novoNo = (No *)malloc(sizeof(No));
   if (!novoNo) {
     printf("Erro ao alocar memória para o nó.\n");
     exit(1);
   }
-  novoNo->carga = carga;
-  novoNo->proximo = NULL;
+  novoNo->carga = carga; // Armazena a carga no nó
+  novoNo->proximo = NULL; // Inicia o ponteiro "proximo" como NULL
   return novoNo;
 }
 
@@ -45,13 +47,13 @@ Carga desenfileirar(Fila *fila) {
     printf("Erro: Fila vazia.\n");
     exit(1);
   }
-  No *noRemovido = fila->inicio;
-  Carga carga = noRemovido->carga;
-  fila->inicio = noRemovido->proximo;
+  No *noRemovido = fila->inicio; // Guarda o nó a ser removido
+  Carga carga = noRemovido->carga; // Armazena a carga removida
+  fila->inicio = noRemovido->proximo; // Atualiza o início da fila
   if (!fila->inicio) { // Se a fila ficou vazia
     fila->fim = NULL;
   }
-  free(noRemovido);
+  free(noRemovido); // Libera a memória do nó removido
   return carga;
 }
 
@@ -87,7 +89,7 @@ void buscarPorID(Fila *fila, const char *id) {
   printf("\nCarga com ID %s não encontrada.\n", id);
 }
 
-// Remove a carga de prioridade mais alta
+// Remove a carga com maior prioridade (ou a primeira da fila, se não houver "Alta")
 void removerPorPrioridade(Fila *fila) {
   if (!fila->inicio) {
     printf("A fila está vazia.\n");
@@ -107,7 +109,7 @@ void removerPorPrioridade(Fila *fila) {
     atual = atual->proximo;
   }
 
-  if (!prioritario) { // Nenhum com prioridade "Alta"
+  if (!prioritario) { // Nenhum com prioridade "Alta" encontrado
     prioritario = fila->inicio;
   }
 
@@ -117,16 +119,16 @@ void removerPorPrioridade(Fila *fila) {
     fila->inicio = prioritario->proximo;
   }
 
-  if (prioritario == fila->fim) {
+  if (prioritario == fila->fim) { // Caso o nó removido seja o último
     fila->fim = prevPrioritario;
   }
 
   printf("Carga ID: %s e Tipo: %s removida! \n", prioritario->carga.id,
          prioritario->carga.tipo);
-  free(prioritario);
+  free(prioritario); // Libera a memória do nó removido
 }
 
-// Carrega cargas de um arquivo .csv
+// Carrega cargas de um arquivo .csv e adiciona a fila
 void carregarCargasDeArquivo(Fila *fila, const char *nomeArquivo) {
   FILE *arquivo = fopen(nomeArquivo, "r");
   if (!arquivo) {
