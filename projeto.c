@@ -164,9 +164,10 @@ void exibirCargas(Fila *f) {
   printf("Fila de Cargas:\n");
   Carga *atual = f->inicio;
   while (atual != NULL) {
-    printf("ID: %s, Tipo: %s, Peso: %.2f kg, Prioridade: %s, Descrição: %s\n",
-           atual->id, atual->tipo, atual->peso, atual->prioridade,
-           atual->descricao);
+    printf(
+        "ID: %s | Tipo: %s | Peso: %.2f Kg | Prioridade: %s | Descrição: %s\n",
+        atual->id, atual->tipo, atual->peso, atual->prioridade,
+        atual->descricao);
     atual = atual->proxima;
   }
 }
