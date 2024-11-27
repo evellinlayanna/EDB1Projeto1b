@@ -1,48 +1,41 @@
-#include "projeto.h"
+#ifndef PROJETO_H
+#define PROJETO_H
 
-int main() {
-  Fila *filaCargas = inicializarFila();
-  carregarCargas(
-      filaCargas,
-      "cargas.csv"); // Substitua "cargas.csv" pelo nome do seu arquivo
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-  int escolha;
-  char idCarga[10];
+// Representa uma carga com seus atributos, como ID, tipo, peso, prioridade e descrição
+// O campo 'proxima' conecta esta carga à próxima, formando uma lista encadeada
+typedef struct Carga {
+  char id[10];
+  char tipo[50];
+  float peso;
+  char prioridade[10];
+  char descricao[200];
+  struct Carga *proxima;
+} Carga;
 
-  do {
-    printf("\n ===== Sistema de Gerenciamento de Cargas ===== \n");
-    printf("1. Adicionar Carga\n");
-    printf("2. Remover Carga\n");
-    printf("3. Buscar Carga\n");
-    printf("4. Exibir Cargas\n");
-    printf("5. Sair\n");
-    printf("Escolha uma opção: ");
-    printf("============================")
-    printf("\n");
-    scanf("%d", &escolha);
+// Representa a fila de cargas. Armazena o início e o final da fila
+typedef struct Fila {
+  Carga *inicio;
+  Carga *fim;
+} Fila;
 
-    switch (escolha) {
-    case 1:
-      adicionarCarga(filaCargas);
-      break;
-    case 2:
-      removerCarga(filaCargas);
-      break;
-    case 3:
-      printf("Informe o ID da carga para buscar: ");
-      scanf("%s", idCarga);
-      buscarCarga(filaCargas, idCarga);
-      break;
-    case 4:
-      exibirCargas(filaCargas);
-      break;
-    case 5:
-      printf("Saindo...\n");
-      break;
-    default:
-      printf("Opção inválida!\n");
-    }
-  } while (escolha != 5);
+// Protótipos das funções
+Carga *criarCarga(char *id, char *tipo, float peso, char *prioridade, char *descricao);
+Fila *inicializarFila();
 
-  return 0;
-}
+int estaVazia(Fila *f);
+void enfileirar(Fila *f, Carga *novaCarga);
+
+Carga *desenfileirar(Fila *f);
+Carga *visualizar(Fila *f);
+
+void adicionarCarga(Fila *f);
+void removerCarga(Fila *f);
+void buscarCarga(Fila *f, char *idCarga);
+void exibirCargas(Fila *f);
+void carregarCargas(Fila *f, char *nomeArquivo);
+
+#endif
