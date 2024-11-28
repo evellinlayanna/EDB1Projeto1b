@@ -12,8 +12,8 @@ typedef struct Carga {
 
 // Estrutura para representar um nó na fila
 typedef struct No {
-  Carga carga;
-  struct No *proximo;
+  Carga carga;        // Guarda os dados da carga armanezados no nó
+  struct No *proximo; // Aponta para o próximo nó na fila
 } No;
 
 // Estrutura para representar a fila
@@ -26,7 +26,7 @@ typedef struct Fila {
 Fila *criarFila();
 No *criarNo(Carga carga);
 void enfileirar(Fila *fila, Carga carga);
-Carga desenfileirar(Fila *fila);
+Carga desenfileirar(Fila *fila); // Remove a primeira carga da fila
 void exibirFila(Fila *fila);
 void buscarPorID(Fila *fila, const char *id);
 void removerPorPrioridade(Fila *fila);
